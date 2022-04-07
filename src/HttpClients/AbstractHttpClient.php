@@ -16,7 +16,7 @@ abstract class AbstractHttpClient implements IHttpClient
     /**
      * Таймаут соединения по умолчанию.
      */
-    const DEFAULT_CONNECTION_TIMEOUT = 5;
+    const DEFAULT_CONNECTION_TIMEOUT = 10;
 
     /**
      * Допустимые HTTP методы для отправки запросов.

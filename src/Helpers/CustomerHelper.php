@@ -39,7 +39,7 @@ class CustomerHelper extends AbstractMindboxHelper
         $operation = $this->createOperation();
         $operation->setCustomer($customer);
 
-        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], false, $addDeviceUUID);
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
     }
 
     /**
@@ -159,6 +159,30 @@ class CustomerHelper extends AbstractMindboxHelper
      * @return \Mindbox\Clients\AbstractMindboxClient
      */
     public function getDataByDiscountCard(
+        CustomerRequestDTO $customer,
+        $operationName,
+        $addDeviceUUID = true
+    ) {
+        $operation = $this->createOperation();
+        $operation->setCustomer($customer);
+
+        $this->client->setResponseType(MindboxCustomerResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+
+    /**
+     * Выполняет вызов стандартной операции Website.GetCustomerInfo:
+     *
+     * @see https://developers.mindbox.ru/docs/получение-данных-потребителя
+     *
+     * @param CustomerRequestDTO $customer      Объект, содержащий данные потребителя для запроса.
+     * @param string             $operationName Название операции.
+     * @param bool               $addDeviceUUID Флаг, сообщающий о необходимости передать в запросе DeviceUUID.
+     *
+     * @return \Mindbox\Clients\AbstractMindboxClient
+     */
+    public function getDataByMindboxID(
         CustomerRequestDTO $customer,
         $operationName,
         $addDeviceUUID = true
@@ -322,6 +346,30 @@ class CustomerHelper extends AbstractMindboxHelper
     }
 
     /**
+     * Выполняет вызов стандартной операции Website.ResendEmailConfirmation:
+     *
+     * @param CustomerRequestDTO $customer      Объект, содержащий данные потребителя для запроса.
+     * @param string             $operationName Название операции.
+     * @param bool               $addDeviceUUID Флаг, сообщающий о необходимости передать в запросе DeviceUUID.
+     * @param bool               $isSync        Флаг, сообщающий о необходимости выполнять запрос синхронно/асинхронно.
+     *
+     * @return \Mindbox\Clients\AbstractMindboxClient
+     */
+    public function resendEmailConfirmationCode(
+        CustomerRequestDTO $customer,
+        $operationName,
+        $addDeviceUUID = true,
+        $isSync = true
+    ) {
+        $operation = $this->createOperation();
+        $operation->setCustomer($customer);
+
+        $this->client->setResponseType(MindboxCustomerProcessingStatusResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], $isSync, $addDeviceUUID);
+    }
+
+    /**
      * Выполняет вызов стандартной операции Website.ConfirmMobilePhone:
      *
      * @see https://developers.mindbox.ru/docs/подтверждение-мобильного-телефона
@@ -412,6 +460,104 @@ class CustomerHelper extends AbstractMindboxHelper
     {
         $operation = $this->createOperation();
         $operation->setCustomer($customer);
+
+        $this->client->setResponseType(MindboxBalanceResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+
+    /**
+     * Выполняет вызов стандартной операции Website.GetCustomerDiscountCardSum:
+     *
+     * @see https://kant.directcrm.ru/operations/Website.GetCustomerSubscriptions/help
+     *
+     * @param CustomerRequestDTO $customer      Объект, содержащий данные потребителя для запроса.
+     * @param string             $operationName Название операции.
+     * @param bool               $addDeviceUUID Флаг, сообщающий о необходимости передать в запросе DeviceUUID.
+     *
+     * @return \Mindbox\Clients\AbstractMindboxClient
+     */
+    public function getCustomerDiscountCardSum(CustomerRequestDTO $customer, $operationName, $addDeviceUUID = true)
+    {
+        $operation = $this->createOperation();
+        $operation->setCustomer($customer);
+
+        $this->client->setResponseType(MindboxBalanceResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+
+
+    public function getCustomerByBitrixId(CustomerRequestDTO $customer, $operationName, $addDeviceUUID = true)
+    {
+        $operation = $this->createOperation();
+        $operation->setCustomer($customer);
+
+        $this->client->setResponseType(MindboxCustomerResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+
+    /**
+     * Выполняет вызов стандартной операции Website.GetCustomerSubscriptions:
+     *
+     * @param CustomerRequestDTO $customer      Объект, содержащий данные потребителя для запроса.
+     * @param string             $operationName Название операции.
+     * @param bool               $addDeviceUUID Флаг, сообщающий о необходимости передать в запросе DeviceUUID.
+     *
+     * @return \Mindbox\Clients\AbstractMindboxClient
+     */
+    public function GetCustomerSubscriptions(CustomerRequestDTO $customer, $operationName, $addDeviceUUID = true)
+    {
+        $operation = $this->createOperation();
+        $operation->setCustomer($customer);
+
+        $this->client->setResponseType(MindboxBalanceResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+    /**
+     * Выполняет вызов стандартной операции Website.ActivateDiscountCard:
+     *
+     * @see https://kant.mindbox.ru/operations/Website.ActivateDiscountCard/help
+     *
+     * @param CustomerRequestDTO $customer      Объект, содержащий данные потребителя для запроса.
+     * @param string             $discountCard  Номер добавляемой дисконтной карты
+     * @param string             $operationName Название операции.
+     * @param bool               $addDeviceUUID Флаг, сообщающий о необходимости передать в запросе DeviceUUID.
+     *
+     * @return \Mindbox\Clients\AbstractMindboxClient
+     */
+    public function setUserDiscoundCard(
+        CustomerRequestDTO $customer,
+        $discountCard,
+        $operationName,
+        $addDeviceUUID = true
+    ) {
+        $operation = $this->createOperation();
+        $operation->setCustomer($customer);
+        $operation->setDiscountCard([
+            'ids' => [
+                'number' => $discountCard
+            ]
+        ]);
+
+        $this->client->setResponseType(MindboxBalanceResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+
+    public function setBonusesForReview(
+        CustomerRequestDTO $customer,
+        $operationName,
+        $bonus,
+        $addDeviceUUID = true
+    ) {
+        $operation = $this->createOperation();
+        $operation->setCustomer($customer);
+        $operation->setBonus([[
+            'changeAmount' => $bonus
+        ]]);
 
         $this->client->setResponseType(MindboxBalanceResponse::class);
 

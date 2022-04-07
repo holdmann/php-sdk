@@ -5,8 +5,12 @@ namespace Mindbox\Helpers;
 use Mindbox\DTO\V2\Requests\OrderCreateRequestDTO;
 use Mindbox\DTO\V2\Requests\OrderUpdateRequestDTO;
 use Mindbox\DTO\V2\Requests\PreorderRequestDTO;
+use Mindbox\DTO\V2\Requests\OrderRequestDTO as OrderRequestDTOV2;
 use Mindbox\Responses\MindboxOrderResponse;
 use Mindbox\Responses\MindboxOrdersResponse;
+use Mindbox\DTO\V3\Requests\CustomerRequestDTO;
+use Mindbox\DTO\V2\Requests\CustomerRequestDTO as CustomerRequestDTOV2;
+use Mindbox\DTO\V3\Requests\OrderRequestDTO;
 
 /**
  * Хелпер, являющий обёрткой над универсальным запросом. Содержит методы для отправки запросов, связанных с
@@ -22,16 +26,28 @@ class OrderHelper extends AbstractMindboxHelper
      *
      * @see https://developers.mindbox.ru/docs/preorderxml
      *
-     * @param PreorderRequestDTO $order         Объект, содержащий данные корзины для запроса.
+     * @param Mindbox\DTO\V2\Requests\OrderRequestDTO $order         Объект, содержащий данные корзины для запроса.
+     * @param Mindbox\DTO\V2\Requests\CustomerRequestDTO $customer      Объект, содержащий данные пользователя для запроса.
      * @param string             $operationName Название операции.
      *
      * @return \Mindbox\Clients\AbstractMindboxClient
      */
-    public function calculateCart(PreorderRequestDTO $order, $operationName)
+    public function calculateCart(
+        OrderRequestDTOV2 $order,
+        CustomerRequestDTOV2 $customer,
+        $operationName
+    )
     {
         $this->client->setResponseType(MindboxOrderResponse::class);
 
-        return $this->client->prepareRequest('POST', $operationName, $order, 'get-pre-order-info', [], true, false);
+        $operation = $this->createOperation();
+        
+        $operation->setOrder($order);
+        if(!is_null($customer) && $customer instanceof CustomerRequestDTOV2) {
+            $operation->setCustomer($customer);
+        }
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, 'get-pre-order-info', [], true, false);
     }
 
     /**
@@ -108,16 +124,64 @@ class OrderHelper extends AbstractMindboxHelper
      *
      * @return \Mindbox\Clients\AbstractMindboxClient
      */
-    public function getOrders($countToReturn, $mindbox, $startingIndex, $operationName)
-    {
-        $queryParams = [
-            'countToReturn' => $countToReturn,
-            'mindbox'       => $mindbox,
-            'startingIndex' => $startingIndex,
-        ];
+    public function getOrders(
+        CustomerRequestDTO $customer,
+        $countToReturn,
+        $pageNumber,
+        $operationName,
+        $addDeviceUUID = true
+    ) {
+
+        $operation = $this->createOperation();
+        $operation->setCustomer($customer);
+        $operation->setPage([
+            'itemsPerPage' => $countToReturn,
+            'pageNumber' => $pageNumber,
+        ]);
 
         $this->client->setResponseType(MindboxOrdersResponse::class);
 
-        return $this->client->prepareRequest('GET', $operationName, null, 'by-customer', $queryParams, true, false);
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+
+    
+    public function getOrder(
+        OrderRequestDTO $order,
+        $operationName,
+        $addDeviceUUID = true
+    ) {
+
+        $operation = $this->createOperation();
+        $operation->setOrder($order);
+
+        $this->client->setResponseType(MindboxOrdersResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+
+    public function beginOrderTransaction(
+        OrderRequestDTO $order,
+        CustomerRequestDTO $customer,
+        $operationName,
+        $addDeviceUUID = true
+    )
+    {
+        $operation = $this->createOperation();
+        $operation->setOrder($order);
+        $operation->setCustomer($customer);
+
+        $this->client->setResponseType(MindboxOrdersResponse::class);
+
+        return $this->client->prepareRequest('POST', $operationName, $operation, '', [], true, $addDeviceUUID);
+    }
+
+    public function commitTransaction(OrderRequestDTO $order, $addDeviceUUID = true)
+    {
+        $operation = $this->createOperation();
+        $operation->setOrder($order);
+
+        $this->client->setResponseType(MindboxOrdersResponse::class);
+
+        return $this->client->prepareRequest('POST', 'Website.CommitOrderTransaction', $operation, '', [], true, $addDeviceUUID);
     }
 }

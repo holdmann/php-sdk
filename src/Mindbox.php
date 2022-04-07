@@ -9,6 +9,7 @@ use Mindbox\Exceptions\MindboxException;
 use Mindbox\Helpers\CustomerHelper;
 use Mindbox\Helpers\OrderHelper;
 use Mindbox\Helpers\ProductListHelper;
+use Mindbox\Helpers\RecommendationHelper;
 use Mindbox\HttpClients\HttpClientFactory;
 use Psr\Log\LoggerInterface;
 
@@ -56,6 +57,11 @@ class Mindbox
      * @var ProductListHelper Экземпляр хелпера для отправки запросов связанных с изменением списка продуктов в корзине.
      */
     private $productList;
+
+    /**
+     * @var RecommendationHelper Экземпляр хелпера для отправки запросов связанных с хитами продаж
+     */
+    private $recommendation;
 
     /**
      * @var array Массив, содержащий пользовательскую конфигурацию SDK.
@@ -201,7 +207,7 @@ class Mindbox
     public function order()
     {
         if (!isset($this->order)) {
-            $this->order = new OrderHelper($this->clientV2);
+            $this->order = new OrderHelper($this->client);
         }
 
         return $this->order;
@@ -219,5 +225,18 @@ class Mindbox
         }
 
         return $this->productList;
+    }
+    /**
+     * Геттер для $recommendation.
+     *
+     * @return RecommendationHelper
+     */
+    public function recommendation()
+    {
+        if (!isset($this->recommendation)) {
+            $this->recommendation = new RecommendationHelper($this->client);
+        }
+
+        return $this->recommendation;
     }
 }

@@ -9,6 +9,7 @@ use Mindbox\DTO\V3\Requests\CustomerIdentityRequestDTO;
 use Mindbox\DTO\V3\Requests\CustomerRequestDTO;
 use Mindbox\DTO\V3\Requests\PageRequestDTO;
 use Mindbox\DTO\V3\Requests\ProductListItemRequestCollection;
+use Mindbox\DTO\V3\Requests\RecommendationRequestDTO;
 use Mindbox\DTO\V3\Requests\RemoveProductFromListRequestDTO;
 use Mindbox\DTO\V3\Requests\SetProductCountInListRequestDTO;
 use Mindbox\DTO\V3\Requests\SmsConfirmationRequestDTO;
@@ -60,6 +61,27 @@ class OperationDTO extends DTO
     public function setCustomer($customer)
     {
         $this->setField('customer', $customer);
+    }
+
+    /**
+     * @param array|OrderRequestDTO $order
+     */
+    public function setOrder($order)
+    {
+        $this->setField('order', $order);
+    }
+
+    /**
+     * @param array $aDiscountCard
+     */
+    public function setDiscountCard($aDiscountCard)
+    {
+        $this->setField('discountCard', $aDiscountCard);
+    }
+
+    public function setBonus($aBonus)
+    {
+        $this->setField('balanceChanges', $aBonus);
     }
 
     /**
@@ -140,6 +162,14 @@ class OperationDTO extends DTO
     public function setAddProductToList($addProductToList)
     {
         $this->setField('addProductToList', $addProductToList);
+    }
+
+    /**
+     * @param array|RecommendationRequestDTO $recommendation
+     */
+    public function setRecomendation($recommendation)
+    {
+        $this->setField('recommendation', $recommendation);
     }
 
     /**

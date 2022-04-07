@@ -3,18 +3,18 @@
 
 namespace Mindbox\DTO\V3\Requests;
 
-use Mindbox\DTO\V3\CustomerDTO;
+    use Mindbox\DTO\V3\CustomerDTO;
 
-/**
- * Class CustomerRequestDTO
- *
- * @package Mindbox\DTO\V3\Requests
- * @property string                        $fullName
- * @property string                        $password
- * @property AreaRequestDTO                $area
- * @property SubscriptionRequestCollection $subscriptions
- * @property string                        $authenticationTicket
- **/
+    /**
+     * Class CustomerRequestDTO
+     *
+     * @package Mindbox\DTO\V3\Requests
+     * @property string                        $fullName
+     * @property string                        $password
+     * @property AreaRequestDTO                $area
+     * @property SubscriptionRequestCollection $subscriptions
+     * @property string                        $authenticationTicket
+     **/
 class CustomerRequestDTO extends CustomerIdentityRequestDTO
 {
     use CustomerDTO, CustomFieldRequestDTO;
@@ -122,6 +122,22 @@ class CustomerRequestDTO extends CustomerIdentityRequestDTO
     public function setBirthDate($birthDate)
     {
         $this->setField('birthDate', $birthDate);
+    }
+    
+    /**
+     * @param mixed $skipass
+     */
+    public function setSkiPass($skipass)
+    {
+        $this->setCustomField('skipass', $skipass);
+    }
+
+    /**
+     * @param mixed $sex
+     */
+    public function setSex($sex)
+    {
+        $this->setField('sex', $sex);
     }
 
     /**
