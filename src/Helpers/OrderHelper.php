@@ -182,6 +182,16 @@ class OrderHelper extends AbstractMindboxHelper
 
         $this->client->setResponseType(MindboxOrdersResponse::class);
 
-        return $this->client->prepareRequest('POST', 'Website.CommitOrderTransaction', $operation, '', [], true, $addDeviceUUID);
+        return $this->client->prepareRequest('POST', 'Website.CommitOrderTransaction', $operation, 'create', [], true, $addDeviceUUID);
+    }
+
+    public function rollbackTransaction(OrderRequestDTO $order, $addDeviceUUID = true)
+    {
+        $operation = $this->createOperation();
+        $operation->setOrder($order);
+
+        $this->client->setResponseType(MindboxOrderResponse::class);
+
+        return $this->client->prepareRequest('POST', 'Website.RollbackOrderTransaction', $operation, 'create', [], false, $addDeviceUUID);
     }
 }
