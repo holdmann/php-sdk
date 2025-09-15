@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Mindbox\DTO\V3\Requests;
 
 use Mindbox\DTO\DTO;
@@ -23,6 +22,7 @@ class RecommendationRequestDTO extends DTO
 
     protected static $DTOMap = [
         'productCategory' => ProductCategoryDTO::class,
+        'product' => ProductIdentityRequestDTO::class,
     ];
 
     /**
@@ -34,12 +34,19 @@ class RecommendationRequestDTO extends DTO
     }
 
     /**
+     * @param $product
+     * @return void
+     */
+    public function setProduct($product)
+    {
+        $this->setField('product', $product);
+    }
+
+    /**
      * @param mixed $category
      */
     public function setProductCategory($category)
     {
         $this->setField('productCategory', $category);
     }
-
-
 }
